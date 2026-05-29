@@ -17,7 +17,7 @@ class Piece {
 
     enum State {
         moving,
-        stationary
+        stationary,
     };
 
   private:
@@ -26,8 +26,9 @@ class Piece {
     State m_state{stationary};
     [[maybe_unused]] bool isColliding{false};
     void translateCell(Cell& cell, Direction dir, size_t magn);
-    static constexpr std::string_view m_movingColor {Ansi::get(Ansi::greyBg)};
-    static constexpr std::string_view m_stationaryColor {Ansi::get(Ansi::whiteBg)};
+    static constexpr std::string_view m_movingColor{Ansi::get(Ansi::greyBg)};
+    static constexpr std::string_view m_stationaryColor{
+        Ansi::get(Ansi::whiteBg)};
 
   public:
     Piece(size_t x, size_t y, State state);

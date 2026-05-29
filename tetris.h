@@ -29,7 +29,7 @@ class Tetris {
     static inline std::array<std::array<Cell, m_numColumns>, m_numRows> board{};
     static constexpr std::pair<size_t, size_t> spawnCoords{m_numColumns / 2 - 2,
                                                            m_numRows};
-    Piece m_currPiece{initializePiece()};
+    Piece m_currPiece{initializePiece(Piece::moving)};
     // Are we already concentrated on a piece
 
     Cell& getCell(size_t x, size_t y);
@@ -38,7 +38,7 @@ class Tetris {
     void updateCells();
     bool checkCollision();
     void setPieceState(Piece::State State);
-    Piece initializePiece() {
-        return Piece{spawnCoords.first, spawnCoords.second - 2, Piece::moving};
+    Piece initializePiece(Piece::State state) {
+        return Piece{spawnCoords.first, spawnCoords.second-1, state};
     };
 };

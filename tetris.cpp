@@ -24,12 +24,12 @@ void Tetris::clearCoords() {
 void Tetris::updateState() {
     if (checkCollision()) {
         setPieceState(Piece::stationary);
-        m_currPiece = initializePiece();
+        m_currPiece = initializePiece(Piece::moving);
         updateCells();
         return;
     }
     clearCoords();
-    m_currPiece.translate(1, Piece::right);
+    m_currPiece.translate(1, Piece::down);
     updateCells();
 }
 

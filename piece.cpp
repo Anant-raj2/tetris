@@ -5,7 +5,7 @@
 #include <utility>
 
 Piece::Piece(size_t x, size_t y, State state = moving) : m_state{state} {
-    assert(m_state == moving || m_state == stationary);
+    assert(m_state == moving || m_state == stationary );
     for (size_t i = 0; i < cells.size(); ++i) {
         cells[i] =
             Cell{x + i, y, true,
