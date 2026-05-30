@@ -12,7 +12,8 @@ class Piece {
     enum Direction {
         down,
         right,
-        left
+        left,
+        invalid
     };
 
     enum State {

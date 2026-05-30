@@ -34,6 +34,8 @@ void Piece::translateCell(Cell& cell, Piece::Direction dir, size_t magn) {
         cell.setCoord(std::pair<size_t, size_t>{cell.getXCoord() - magn,
                                                 cell.getYCoord()});
         break;
+    case Piece::invalid:
+        break;
     }
 }
 
@@ -49,7 +51,6 @@ bool Piece::hasCell(const Cell& nextCell) {
 }
 
 void Piece::setState(State newState) {
-    assert(newState == moving || newState == stationary);
     m_state = newState;
     std::string_view newColor{};
     switch (m_state) {

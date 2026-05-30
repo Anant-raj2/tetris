@@ -6,6 +6,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <optional>
 #include <string_view>
 #include <utility>
 
@@ -19,9 +20,10 @@ class Tetris {
         }
     }
     void clearScreen();
-    void updateState();
+    void updateState(Piece::Direction direction);
     void drawBoard();
     bool shouldQuit();
+    static Piece::Direction parseInput(char input);
 
   private:
     static constexpr int m_numRows{20};
@@ -29,6 +31,7 @@ class Tetris {
     static inline std::array<std::array<Cell, m_numColumns>, m_numRows> board{};
     static constexpr std::pair<size_t, size_t> spawnCoords{m_numColumns / 2 - 2,
                                                            m_numRows};
+
     Piece m_currPiece{initializePiece(Piece::moving)};
     // Are we already concentrated on a piece
 
@@ -36,7 +39,7 @@ class Tetris {
 
     void clearCoords();
     void updateCells();
-    bool checkCollision();
+    bool checkBelow();
     void setPieceState(Piece::State State);
     Piece initializePiece(Piece::State state) {
         return Piece{spawnCoords.first, spawnCoords.second-1, state};

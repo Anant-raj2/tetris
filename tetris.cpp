@@ -1,6 +1,7 @@
 #include "tetris.h"
 #include "piece.h"
 #include <iostream>
+#include <optional>
 
 Cell& Tetris::getCell(size_t x, size_t y) {
     assert(x <= m_numColumns - 1);
@@ -21,15 +22,15 @@ void Tetris::clearCoords() {
 }
 
 // TODO: Rework the flow in this
-void Tetris::updateState() {
-    if (checkCollision()) {
+void Tetris::updateState(Piece::Direction dir) {
+    if (checkBelow()) {
         setPieceState(Piece::stationary);
         m_currPiece = initializePiece(Piece::moving);
         updateCells();
         return;
     }
     clearCoords();
-    m_currPiece.translate(1, Piece::down);
+    m_currPiece.translate(1, dir);
     updateCells();
 }
 
@@ -64,7 +65,7 @@ void Tetris::setPieceState(Piece::State state) {
     updateCells();
 }
 
-bool Tetris::checkCollision() {
+bool Tetris::checkBelow() {
     if (m_currPiece.getState() == Piece::stationary) return false;
     for (const auto& cell : m_currPiece.getCells()) {
         if (cell.getYCoord() <= 0) return true;
@@ -84,4 +85,17 @@ bool Tetris::shouldQuit() {
         }
     }
     return quit;
+}
+
+Piece::Direction Tetris::parseInput(char input) {
+    switch (input) {
+    case 'h':
+        return Piece::left;
+    case 'j':
+        return Piece::down;
+    case 'l':
+        return Piece::right;
+    default:
+        return Piece::invalid;
+    }
 }
