@@ -1,15 +1,20 @@
 #include "tetris.h"
+#include "ansi.h"
 #include "piece.h"
+#include <array>
+#include <cstddef>
 #include <iostream>
-#include <optional>
+#include <ranges>
+#include <utility>
+#include <vector>
 
-Cell& Tetris::getCell(size_t x, size_t y) {
-    assert(x <= m_numColumns - 1);
-    assert(y <= m_numRows - 1);
+Cell& Tetris::getCell(int x, int y) {
+    assert(x <= m_numColumns - 1 && x >= 0);
+    assert(y <= m_numRows - 1 && x >= 0);
 
-    size_t cell_x{x};
-    size_t cell_y{(m_numRows - 1) - y};
-    return board[cell_y][cell_x];
+    int cell_x{x};
+    int cell_y{(m_numRows - 1) - y};
+    return board[static_cast<size_t>(cell_y)][static_cast<size_t>(cell_x)];
 }
 
 void Tetris::clearScreen() { std::cout << Ansi::get(Ansi::clear); }
@@ -23,15 +28,49 @@ void Tetris::clearCoords() {
 
 // TODO: Rework the flow in this
 void Tetris::updateState(Piece::Direction dir) {
-    if (checkBelow()) {
-        setPieceState(Piece::stationary);
-        m_currPiece = initializePiece(Piece::moving);
-        updateCells();
+    if (m_currPiece.getState() == Piece::initial) {
+        setPieceState(Piece::moving);
         return;
     }
+
+    Piece::Position newCoords;
+    if (dir == Piece::rotate) {
+        newCoords = m_currPiece.constructCoords();
+    } else {
+        newCoords = m_currPiece.constructCoords(dir);
+    }
+
+    if (!isValidDir(newCoords)) {
+        if (dir == Piece::down) {
+            setPieceState(Piece::stationary);
+            m_currPiece = initializePiece(Piece::moving);
+            updateCells();
+        }
+        return;
+    }
+
+    if (dir == Piece::rotate) {
+        m_currPiece.nextRotation();
+    }
+
     clearCoords();
-    m_currPiece.translate(1, dir);
+    m_currPiece.applyCoords(newCoords);
     updateCells();
+    // destroyCompleteLines();
+}
+
+bool Tetris::isValidDir(Piece::Position coords) {
+    if (m_currPiece.getState() == Piece::stationary) return false;
+    bool isValid{true};
+    for (const auto& coord : coords) {
+        if (coord.first >= m_numColumns || coord.first < 0) return false;
+        if (coord.second >= m_numRows || coord.second < 0) return false;
+        const Cell& boardCell = getCell(coord.first, coord.second);
+        if (boardCell.isActive() && !m_currPiece.hasCell(boardCell)) {
+            isValid = false;
+        }
+    }
+    return isValid;
 }
 
 void Tetris::updateCells() {
@@ -43,7 +82,7 @@ void Tetris::updateCells() {
 
 void Tetris::drawBoard() {
     std::cout << Ansi::get(Ansi::greyBg);
-    for (size_t i{}; i < m_numColumns * 3 + 2; ++i) {
+    for (int i{}; i < m_numColumns * 3 + 2; ++i) {
         std::cout << " ";
     }
     std::cout << '\n';
@@ -54,7 +93,7 @@ void Tetris::drawBoard() {
         }
         std::cout << Ansi::get(Ansi::greyBg) << " " << '\n';
     }
-    for (size_t i{}; i < m_numColumns * 3 + 2; ++i) {
+    for (int i{}; i < m_numColumns * 3 + 2; ++i) {
         std::cout << " ";
     }
     std::cout << Ansi::get(Ansi::defaultBg) << "\n\n";
@@ -80,7 +119,7 @@ bool Tetris::checkBelow() {
 bool Tetris::shouldQuit() {
     bool quit{false};
     for (const auto& cell : m_currPiece.getCells()) {
-        if (cell.getYCoord() == spawnCoords.second) {
+        if (cell.getYCoord() == m_spawnCoords.second) {
             quit = true;
         }
     }
@@ -93,6 +132,8 @@ Piece::Direction Tetris::parseInput(char input) {
         return Piece::left;
     case 'j':
         return Piece::down;
+    case 'k':
+        return Piece::rotate;
     case 'l':
         return Piece::right;
     default:

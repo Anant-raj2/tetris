@@ -9,13 +9,15 @@
 #include <optional>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 class Tetris {
   public:
     Tetris() {
-        for (size_t i{}; i < m_numRows; ++i) {
-            for (size_t j{}; j < m_numColumns; ++j) {
-                board[i][j] = Cell{j, (m_numRows - 1) - i};
+        for (int i{}; i < m_numRows; ++i) {
+            for (int j{}; j < m_numColumns; ++j) {
+                board[static_cast<size_t>(i)][static_cast<size_t>(j)] =
+                    Cell{j, (m_numRows - 1) - i};
             }
         }
     }
@@ -29,19 +31,22 @@ class Tetris {
     static constexpr int m_numRows{20};
     static constexpr int m_numColumns{10};
     static inline std::array<std::array<Cell, m_numColumns>, m_numRows> board{};
-    static constexpr std::pair<size_t, size_t> spawnCoords{m_numColumns / 2 - 2,
-                                                           m_numRows};
+    static constexpr Piece::Coord m_spawnCoords{(m_numColumns - 1) / 2,
+                                                m_numRows};
+    Piece m_currPiece{initializePiece()};
 
-    Piece m_currPiece{initializePiece(Piece::moving)};
-    // Are we already concentrated on a piece
-
-    Cell& getCell(size_t x, size_t y);
+    Cell& getCell(int x, int y);
 
     void clearCoords();
     void updateCells();
     bool checkBelow();
+    bool checkCollision(Piece::Direction dir);
     void setPieceState(Piece::State State);
-    Piece initializePiece(Piece::State state) {
-        return Piece{spawnCoords.first, spawnCoords.second-1, state};
+    Piece initializePiece(Piece::State state = Piece::initial) {
+        return Piece{m_spawnCoords.first, m_spawnCoords.second - 1, state};
     };
+    void updatePieceState(Piece::Direction dir);
+    std::vector<Piece::Direction> checkCollisions();
+    bool isValidDir(Piece::Position coords);
+    void destroyCompleteLines();
 };

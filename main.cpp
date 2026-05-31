@@ -3,7 +3,6 @@
 #include <cassert>
 #include <cerrno>
 #include <cstdlib>
-#include <iostream>
 #include <termios.h>
 #include <thread>
 #include <unistd.h>
@@ -41,16 +40,15 @@ int main() {
     int updateCounter{};
     while (true) {
         Piece::Direction direction{getDirection()};
+
         if (direction != Piece::invalid) {
             int flushStatus = tcflush(STDIN_FILENO, TCIOFLUSH);
             assert(flushStatus == 0);
-            if (direction == Piece::down) {
-                updateCounter = 1;
-            }
             game.clearScreen();
             game.updateState(direction);
             game.drawBoard();
         }
+
         if (++updateCounter % 20 == 0) {
             game.clearScreen();
             game.updateState(Piece::down);
@@ -59,5 +57,6 @@ int main() {
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
+
     return 0;
 }
