@@ -37,8 +37,14 @@ int main() {
     enableRawMode();
 
     Tetris game{};
-    int updateCounter{};
-    while (true) {
+    [[maybe_unused]] int updateCounter{};
+    do {
+        if (updateCounter == 0) { // Initial load
+            game.clearScreen();
+            game.updateState(Piece::invalid);
+            game.drawBoard();
+        }
+
         Piece::Direction direction{getDirection()};
 
         if (direction != Piece::invalid) {
@@ -47,16 +53,17 @@ int main() {
             game.clearScreen();
             game.updateState(direction);
             game.drawBoard();
+            if (direction == Piece::down) {
+                updateCounter = 1;
+            }
         }
-
-        if (++updateCounter % 20 == 0) {
+        if (++updateCounter % 15 == 0){
             game.clearScreen();
             game.updateState(Piece::down);
             game.drawBoard();
-            updateCounter = 1;
+            updateCounter=1;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-
+    } while (!game.shouldQuit());
     return 0;
 }
