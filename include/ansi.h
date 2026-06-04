@@ -6,9 +6,9 @@
 namespace Ansi {
     enum Code {
         clear,
-        greyBg,
-        defaultBg,
-        whiteBg,
+        activeBg,
+        inactiveBg,
+        stationaryBg,
         maxCodes
     };
 

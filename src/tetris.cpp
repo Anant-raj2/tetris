@@ -27,7 +27,7 @@ void Tetris::clearCoords() {
 
 bool Tetris::isComplete(int rowIdx) {
     for (const auto& cell : m_board.data()[rowIdx]) {
-        if (!cell.isActive() || cell.getColor() != Ansi::get(Ansi::whiteBg)) {
+        if (!cell.isActive() || cell.getColor() != Ansi::get(Ansi::stationaryBg)) {
             return false;
         }
     }
@@ -50,7 +50,7 @@ bool Tetris::destroyCompleteLines() {
             // Copy the state values of the old row into the new row
             for (int i{}; i < m_numColumns; ++i) {
                 // TODO: Oh my god..
-                if (row.data()[i].getColor() != Ansi::get(Ansi::greyBg)) {
+                if (row.data()[i].getColor() != Ansi::get(Ansi::activeBg)) {
                     newRow.data()[i].setColor(row.data()[i].getColor());
                     newRow.data()[i].setIsActive(row.data()[i].isActive());
                 }
@@ -136,22 +136,22 @@ void Tetris::updateCells() {
 }
 
 void Tetris::drawBoard() {
-    std::cout << Ansi::get(Ansi::greyBg);
+    std::cout << Ansi::get(Ansi::activeBg);
     for (int i{}; i < m_numColumns * 3 + 2; ++i) {
         std::cout << " ";
     }
     std::cout << '\n';
     for (const auto& row : m_board) {
-        std::cout << Ansi::get(Ansi::greyBg) << " ";
+        std::cout << Ansi::get(Ansi::activeBg) << " ";
         for (const auto& cell : row) {
             cell.draw();
         }
-        std::cout << Ansi::get(Ansi::greyBg) << " " << '\n';
+        std::cout << Ansi::get(Ansi::activeBg) << " " << '\n';
     }
     for (int i{}; i < m_numColumns * 3 + 2; ++i) {
         std::cout << " ";
     }
-    std::cout << Ansi::get(Ansi::defaultBg) << "\n\n";
+    std::cout << Ansi::get(Ansi::inactiveBg) << "\n\n";
     std::cout << "Score: " << m_score << '\n';
 }
 

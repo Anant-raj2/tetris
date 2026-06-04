@@ -37,7 +37,9 @@ int main() {
     enableRawMode();
 
     Tetris game{};
-    [[maybe_unused]] int updateCounter{};
+    int updateCounter{};
+    constexpr int updateTime{15};
+
     do {
         if (updateCounter == 0) { // Initial load
             game.clearScreen();
@@ -57,7 +59,7 @@ int main() {
                 updateCounter = 1;
             }
         }
-        if (++updateCounter % 15 == 0){
+        if (++updateCounter % updateTime == 0){
             game.clearScreen();
             game.updateState(Piece::down);
             game.drawBoard();

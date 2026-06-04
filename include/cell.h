@@ -9,9 +9,11 @@
 
 class Cell {
   public:
+    using Coord = std::pair<int, int>;
+
     Cell() = default;
-    explicit Cell(int x, int y, bool isActive = false,
-                  std::string_view color = Ansi::get(Ansi::defaultBg))
+    Cell(int x, int y, bool isActive = false,
+         std::string_view color = Ansi::get(Ansi::inactiveBg))
         : m_coord{x, y}, m_isActive{isActive}, m_color{color} {}
 
     bool isActive() const { return m_isActive; }
@@ -26,7 +28,7 @@ class Cell {
     std::string_view getColor() const { return m_color; }
 
   private:
-    std::pair<int, int> m_coord;
+    Coord m_coord;
     bool m_isActive{false};
     static constexpr std::string_view m_rep = "   ";
     std::string_view m_color;
