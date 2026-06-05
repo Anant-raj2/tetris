@@ -20,7 +20,7 @@ auto Piece::constructCoords(Direction dir) -> Position {
     Position newCoords{};
     int counter{};
     for (const auto& cell : m_cells) {
-        Coord currCoords{cell.getXCoord(), cell.getYCoord()};
+        Cell::Coord currCoords{cell.getXCoord(), cell.getYCoord()};
         translateCoords(currCoords, dir);
         newCoords.data()[counter] = currCoords;
         ++counter;

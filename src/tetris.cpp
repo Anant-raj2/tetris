@@ -27,14 +27,14 @@ void Tetris::clearCoords() {
 
 bool Tetris::isComplete(int rowIdx) {
     for (const auto& cell : m_board.data()[rowIdx]) {
-        if (!cell.isActive() || cell.getColor() != Ansi::get(Ansi::stationaryBg)) {
+        if (!cell.isActive() ||
+            cell.getColor() != Ansi::get(Ansi::stationaryBg)) {
             return false;
         }
     }
     return true;
 }
 
-// TODO: For the love of god, refactor this
 // returns bool to signify if the board has had any completed lines.
 bool Tetris::destroyCompleteLines() {
     Board newBoard{initializeBoard()};
@@ -48,11 +48,11 @@ bool Tetris::destroyCompleteLines() {
             std::array<Cell, m_numColumns> newRow{
                 initializeRow(counter + cleared)};
             // Copy the state values of the old row into the new row
-            for (int i{}; i < m_numColumns; ++i) {
-                // TODO: Oh my god..
-                if (row.data()[i].getColor() != Ansi::get(Ansi::activeBg)) {
-                    newRow.data()[i].setColor(row.data()[i].getColor());
-                    newRow.data()[i].setIsActive(row.data()[i].isActive());
+            for (size_t i{}; i < m_numColumns; ++i) {
+                // If the cell isn't part of the active cell. don't move it
+                if (row[i].getColor() != Ansi::get(Ansi::activeBg)) {
+                    newRow[i].setColor(row[i].getColor());
+                    newRow[i].setIsActive(row[i].isActive());
                 }
             }
             newBoard[static_cast<size_t>(counter + cleared)] = newRow;
@@ -77,7 +77,6 @@ bool Tetris::destroyCompleteLines() {
     return false;
 }
 
-// TODO: Rework the flow in this
 void Tetris::updateState(Piece::Direction dir) {
     if (destroyCompleteLines()) {
         updateCells();
