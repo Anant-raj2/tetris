@@ -26,3 +26,7 @@ target_include_directories(tetris
     PRIVATE
         ${PROJECT_SOURCE_DIR}/include
 )
+
+if (LINUX AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_link_options(${PROJECT_NAME} PRIVATE -static-libstdc++ -static-libgcc)
+endif()
