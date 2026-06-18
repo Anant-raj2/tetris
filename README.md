@@ -17,6 +17,7 @@ https://github.com/user-attachments/assets/63227b50-09c5-453d-89a4-a43fa3c1ddd7
 - cd tetris
 - cmake -B build
 - cmake --build build
+- ./build/terminal
 
 ## Running the precompiled binary (not recommended)
 Refer to the directions in the Releases page.
