@@ -12,4 +12,13 @@ https://github.com/user-attachments/assets/63227b50-09c5-453d-89a4-a43fa3c1ddd7
 - *k* - rotate piece
 - *l* - move piece right
 
-Made this on macos so not going to work on windows.
+## Building from source
+- git clone https://github.com/Anant-raj2/tetris.git
+- cd tetris
+- cmake -B build
+- cmake --build build
+
+## Running the precompiled binary (not recommended)
+Refer to the directions in the Releases page.
+
+Disclaimer: The program was developed on macos and will only work on macos. Thank you.
